@@ -9,12 +9,13 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public abstract class Card {
     // Whether the card dataset has been loaded
     private static boolean initialized = false;
     // Global variable containing the card dataset
-    private static ArrayList<Card> cards = new ArrayList<>();
+    private static HashMap<String, Card> cards = new HashMap<String, Card>();
 
     protected final String id,
             localId,
@@ -58,7 +59,7 @@ public abstract class Card {
     }
 
     // Get card list, and read it from memory if we haven't already
-    public static ArrayList<Card> getCards(Context context) {
+    public static HashMap<String, Card> getCards(Context context) {
         // Load cards if not initialized
         if (!Card.initialized) {
             try {
@@ -68,7 +69,7 @@ public abstract class Card {
                 String line;
                 while ((line = reader.readLine()) != null) {
                     Card c = Card.fromString(line);
-                    Card.cards.add(c);
+                    Card.cards.put(c.id, c);
                 }
                 Card.initialized = true;
             } catch (IOException | Json.ParsingException e) {
