@@ -9,5 +9,104 @@
     android:background="@color/lilac"
     tools:context=".HomeView">
 
+  <RelativeLayout
+      android:layout_width="290dp"
+      android:layout_height="192dp"
+      android:layout_marginBottom="555dp"
+      android:background="@drawable/border"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent">
+
+  </RelativeLayout>
+
+  <ScrollView
+      android:layout_width="290dp"
+      android:layout_height="250dp"
+      android:layout_marginBottom="455dp"
+      android:background="@drawable/border"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" />
+  </ScrollView>
+
+  <TextView
+      android:id="@+id/title"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="100dp"
+      android:text="Recently Viewed Cards"
+      android:textSize="24dp"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+  <RelativeLayout
+      android:layout_width="290dp"
+      android:layout_height="192dp"
+      android:layout_marginBottom="160dp"
+      android:background="@drawable/border"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent" >
+  </RelativeLayout>
+
+  <androidx.constraintlayout.widget.Guideline
+      android:id="@+id/guideline"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      app:layout_constraintGuide_percent="0.85" />
+
+  <androidx.constraintlayout.widget.Guideline
+      android:id="@+id/guideline2"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      app:layout_constraintGuide_percent="0.15" />
+
+  <TextView
+      android:id="@+id/cardsCollected"
+      android:layout_width="125dp"
+      android:layout_height="75dp"
+      android:layout_marginBottom="260dp"
+      android:background="@drawable/border"
+      android:text="\n   Cards Collected \n #"
+      android:textSize="15dp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0.25"
+      app:layout_constraintStart_toStartOf="parent" />
+
+  <TextView
+      android:id="@+id/collectionValue"
+      android:layout_width="125dp"
+      android:layout_height="75dp"
+      android:layout_marginBottom="260dp"
+      android:background="@drawable/border"
+      android:text="\n   Collection Value \n $"
+      android:textSize="15dp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0.75"
+      app:layout_constraintStart_toStartOf="parent" />
+
+  <Button
+      android:id="@+id/randomCard"
+      android:layout_width="250dp"
+      android:layout_height="75dp"
+      android:layout_marginBottom="172dp"
+      android:backgroundTint="@color/bled"
+      android:text="Random Card"
+      android:textSize="16dp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0.509"
+      app:layout_constraintStart_toStartOf="parent" />
 
   </androidx.constraintlayout.widget.ConstraintLayout>
