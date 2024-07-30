@@ -17,7 +17,7 @@ public abstract class Card {
     // Global variable containing the card dataset
     private static HashMap<String, Card> cards = new HashMap<String, Card>();
 
-    protected final String id,
+    public final String id,
             localId,
             name,
             image,
