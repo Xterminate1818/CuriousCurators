@@ -1,10 +1,15 @@
 package com.example.curiouscurators;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.SearchView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -17,9 +22,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 
 public class SearchActivity extends AppCompatActivity {
+    private static final String[] searchTypesArray = {"By name", "By artist"};
+    private RecyclerView cardRecycler;
+    private SearchRecyclerViewAdapter cardAdapter;
+    private CardSubset searchSubset;
+    private Spinner searchType;
+    private ArrayAdapter<String> searchAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,11 +42,32 @@ public class SearchActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        Card.getCards(this);
-        RecyclerView rv = findViewById(R.id.searchRecyclerView);
-        SearchRecyclerViewAdapter adapter = new SearchRecyclerViewAdapter(this);
-        rv.setAdapter(adapter);
-        rv.setLayoutManager(new LinearLayoutManager(this));
+        Card.initialize(this);
+        this.cardRecycler = findViewById(R.id.searchRecyclerView);
+        this.searchType = findViewById(R.id.searchType);
+        this.searchAdapter = new ArrayAdapter<String>(this, R.id.searchType, searchTypesArray);
+        this.searchSubset = new CardSubset();
+        this.cardAdapter = new SearchRecyclerViewAdapter(this, this.searchSubset);
+        this.cardRecycler.setAdapter(this.cardAdapter);
+        this.cardRecycler.setLayoutManager(new LinearLayoutManager(this));
+        SearchView search = findViewById(R.id.searchBar);
+        search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @SuppressLint("NotifyDataSetChanged")
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                SearchActivity.this.searchSubset.setNameFilter(s);
+                SearchActivity.this.cardAdapter.notifyDataSetChanged();
+                return true;
+            }
+
+            @SuppressLint("NotifyDataSetChanged")
+            @Override
+            public boolean onQueryTextChange(String s) {
+                SearchActivity.this.searchSubset.setNameFilter(s);
+                SearchActivity.this.cardAdapter.notifyDataSetChanged();
+                return true;
+            }
+        });
     }
 }
 
@@ -42,11 +75,11 @@ class SearchRecyclerViewAdapter
         extends RecyclerView.Adapter
         <SearchRecyclerViewAdapter.MyViewHolder> {
     Context context;
-    ArrayList<Card> cards;
+    CardSubset cards;
 
-    public SearchRecyclerViewAdapter(Context context) {
+    public SearchRecyclerViewAdapter(Context context, CardSubset subset) {
         this.context = context;
-        this.cards = new ArrayList<Card>(Card.getCards(context).values());
+        this.cards = subset;
     }
 
     @NonNull
@@ -59,24 +92,26 @@ class SearchRecyclerViewAdapter
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        Card current = this.cards.get(position);
+        String id = this.cards.getContained().get(position)[1];
+        Card current = Card.getCardById(id);
         holder.name.setText(current.name);
-        holder.set.setText(current.setName);
+        holder.setLogo.setImageDrawable(Card.getLogoById(current.setId));
         holder.artist.setText(current.illustrator);
     }
 
     @Override
     public int getItemCount() {
-        return this.cards.size();
+        return this.cards.getContained().size();
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView name, set, artist;
+        TextView name, artist;
+        ImageView setLogo;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.cardName);
-            set = itemView.findViewById(R.id.setName);
+            setLogo = itemView.findViewById(R.id.setLogo);
             artist = itemView.findViewById(R.id.artistName);
         }
     }

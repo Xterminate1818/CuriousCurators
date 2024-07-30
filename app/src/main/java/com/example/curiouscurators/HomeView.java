@@ -19,6 +19,6 @@ public class HomeView extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        Card.getCards(this);
+        Card.initialize(this);
     }
 }

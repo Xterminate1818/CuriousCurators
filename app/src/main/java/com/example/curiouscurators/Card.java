@@ -1,23 +1,32 @@
 package com.example.curiouscurators;
 
 import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 
 public abstract class Card {
     // Whether the card dataset has been loaded
     private static boolean initialized = false;
-    // Global variable containing the card dataset
-    private static HashMap<String, Card> cards = new HashMap<String, Card>();
+    // Card objects indexed by global ID
+    private static HashMap<String, Card> cardsById = new HashMap<String, Card>();
+    // Sorted table of {name, globalId}
+    private static ArrayList<String[]> cardsByName = new ArrayList<String[]>();
+    // Sorted table of {illustrator, globalId}
+    private static ArrayList<String[]> cardsByArtist = new ArrayList<String[]>();
 
-    public final String id,
+    private static HashMap<String, Drawable> setLogos = new HashMap<String, Drawable>();
+
+    public final String globalId,
             localId,
             name,
             image,
@@ -30,7 +39,7 @@ public abstract class Card {
             setSymbol;
 
     public Card(Json js) throws Json.ParsingException {
-        this.id = js.get("id").value();
+        this.globalId = js.get("id").value();
         this.localId = js.get("localId").value();
         this.name = js.get("name").value();
         this.image = js.get("image").valueOrDefault("");
@@ -58,25 +67,91 @@ public abstract class Card {
         }
     }
 
-    // Get card list, and read it from memory if we haven't already
-    public static HashMap<String, Card> getCards(Context context) {
-        // Load cards if not initialized
+    public static void initialize(Context context) {
         if (!Card.initialized) {
             try {
                 BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(context.getAssets().open("cards.json"))
+                        new InputStreamReader(context.getAssets().open("cards.json"))
                 );
+                // Read and parse cards
                 String line;
                 while ((line = reader.readLine()) != null) {
                     Card c = Card.fromString(line);
-                    Card.cards.put(c.id, c);
+                    Card.cardsById.put(c.globalId, c);
+                    Card.cardsByName.add(new String[] {cleanName(c.name), c.globalId});
+                    Card.cardsByArtist.add(new String[] {cleanName(c.illustrator), c.globalId});
+                }
+                // Sort cards by name
+                Card.cardsByName.sort(new Comparator<String[]>() {
+                    @Override
+                    public int compare(String[] s1, String[] s2) {
+                        return s1[0].compareTo(s2[0]);
+                    }
+                });
+                // Sort cards by artist
+                Card.cardsByArtist.sort(new Comparator<String[]>() {
+                    @Override
+                    public int compare(String[] s1, String[] s2) {
+                        return s1[0].compareTo(s2[0]);
+                    }
+                });
+                TypedArray setNames = context.getResources().obtainTypedArray(R.array.setNames);
+                TypedArray setLogos = context.getResources().obtainTypedArray(R.array.setLogos);
+                for (int i = 0; i < setNames.length(); i++) {
+                    String name = setNames.getString(i);
+                    int logoId = setLogos.getResourceId(i, -1);
+                    Drawable logo = ContextCompat.getDrawable(context, logoId);
+                    Card.setLogos.put(name, logo);
                 }
                 Card.initialized = true;
             } catch (IOException | Json.ParsingException e) {
                 throw new RuntimeException(e);
             }
         }
-        return cards;
+    }
+
+    // Strips punctuation and capitalization for easier searching
+    public static String cleanName(String in) {
+        return in.strip()
+                .toLowerCase()
+                .replaceAll("'", "")
+                .replaceAll("\\.", "");
+    }
+
+    // Get card hashmap, throw exception if not initialized
+    public static Card getCardById(String id) {
+        if (!Card.initialized) {
+            throw new RuntimeException("Cards not initialized. Do `Card.initialize()` first.");
+        }
+        return cardsById.get(id);
+    }
+
+    public static Drawable getLogoById(String id) {
+        if (!Card.initialized) {
+            throw new RuntimeException("Cards not initialized. Do `Card.initialize()` first.");
+        }
+        Drawable d = setLogos.get(id);
+        if (d == null) {
+            return setLogos.get("base1");
+        } else {
+            return d;
+        }
+    }
+
+    // Get card sorted list, throw exception if not initialized
+    public static ArrayList<String[]> getCardsByName() {
+        if (!Card.initialized) {
+            throw new RuntimeException("Cards not initialized. Do `Card.initialize()` first.");
+        }
+        return cardsByName;
+    }
+
+    // Get card sorted list, throw exception if not initialized
+    public static ArrayList<String[]> getCardsByArtist() {
+        if (!Card.initialized) {
+            throw new RuntimeException("Cards not initialized. Do `Card.initialize()` first.");
+        }
+        return cardsByArtist;
     }
 
     @NonNull
