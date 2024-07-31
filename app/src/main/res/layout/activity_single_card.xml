@@ -79,4 +79,22 @@
         android:clickable="true"
         app:layout_constraintBottom_toBottomOf="@+id/cardImage"
         app:layout_constraintEnd_toEndOf="@+id/cardImage" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:elevation="2dp"
+        android:background="@drawable/bottom_background"
+        app:itemIconSize="30dp"
+        app:itemIconTint="@drawable/item_selector"
+        app:itemRippleColor="@android:color/transparent"
+        app:labelVisibilityMode="labeled"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/bottom_menu"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
