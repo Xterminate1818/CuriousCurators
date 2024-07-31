@@ -84,7 +84,7 @@ public class CardSubset {
 
     /**
      * Sets the filter string and updates the contained subset accordingly.
-     * @param newFilter the new filter string to apply
+     * @param newFilter the new filter string to apply.
      */
     public void setFilter(String newFilter) {
         newFilter = Card.cleanName(newFilter);

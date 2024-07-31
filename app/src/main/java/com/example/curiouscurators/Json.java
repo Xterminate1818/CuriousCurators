@@ -155,7 +155,7 @@ public abstract class Json {
     }
 
     /**
-     * Represents a JSON object structure as a map from keys to Json objects
+     * Represents a JSON object structure as a map from keys to Json objects.
      */
     private static class Map extends Json {
         private Map() { super(); }

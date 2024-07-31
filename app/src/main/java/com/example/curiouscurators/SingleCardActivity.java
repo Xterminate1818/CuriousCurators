@@ -19,7 +19,7 @@ import java.util.concurrent.Executors;
 import java.net.URL;
 
 /**
- * Activity to display detailed information and image of a specific card
+ * Activity to display detailed information and image of a specific card.
  */
 public class SingleCardActivity extends AppCompatActivity {
     ImageView cardImage;
