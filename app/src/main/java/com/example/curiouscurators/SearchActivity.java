@@ -116,7 +116,7 @@ public class SearchActivity extends AppCompatActivity {
 
 /**
  * Adapter for the RecyclerView used in SearchActivity.
- * Binds data from the CardSubset to views in the RecyclerView.
+ * Binds data from the CardSubset to views in the RecyclerView
  */
 class SearchRecyclerViewAdapter
         extends RecyclerView.Adapter
