@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">CuriousCurators</string>
+    <string name="setNamePrefix">Set: %1$s</string>
+    <string name="artistNamePrefix">Artist: %1$s</string>
     <string-array name="searchDropdown">
         <item>Search by name</item>
         <item>Search by artist</item>
