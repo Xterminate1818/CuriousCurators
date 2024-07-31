@@ -116,7 +116,7 @@ public class SingleCardActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 boolean owned = Card.isCardOwned(card.globalId);
-                Card.setCardOwned(card.globalId, !owned);
+                Card.setCardOwned(SingleCardActivity.this, card.globalId, !owned);
                 setAddButtonText();
             }
         });

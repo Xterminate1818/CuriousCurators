@@ -94,7 +94,6 @@ public class SearchActivity extends AppCompatActivity {
             @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long id) {
-                System.out.println(pos);
                 switch(pos) {
                     case 0:
                         SearchActivity.this.searchSubset.setFilterType(CardSubset.FilterType.Name);

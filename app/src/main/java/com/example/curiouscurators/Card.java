@@ -3,15 +3,19 @@ package com.example.curiouscurators;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -146,6 +150,7 @@ public abstract class Card {
             energySymbols.put("Metal", ContextCompat.getDrawable(context, R.drawable.energy_metal));
             energySymbols.put("Psychic", ContextCompat.getDrawable(context, R.drawable.energy_psychic));
             energySymbols.put("Water", ContextCompat.getDrawable(context, R.drawable.energy_water));
+            readOwnedCards(context);
             Card.initialized = true;
             setNames.recycle();
             setLogos.recycle();
@@ -165,12 +170,13 @@ public abstract class Card {
      * Modify the ownership status of a card
      * @param globalId the globalId of the card to modify
      */
-    public static void setCardOwned(String globalId, boolean state) {
+    public static void setCardOwned(Context context, String globalId, boolean state) {
         if (state) {
             Card.cardsOwned.add(globalId);
         } else {
             Card.cardsOwned.remove(globalId);
         }
+        Card.writeOwnedCards(context);
     }
 
     /**
@@ -185,7 +191,48 @@ public abstract class Card {
         return cards;
     }
 
-    public static void writeOwnedCards(Context context) {
+    private static void writeOwnedCards(Context context) {
+        try {
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("owned.csv", Context.MODE_PRIVATE));
+            String data = String.join(",", cardsOwned);
+            System.out.println(data);
+            outputStreamWriter.write(data);
+            outputStreamWriter.flush();
+            outputStreamWriter.close();
+        }
+        catch (IOException e) {
+            Log.e("Exception", "File write failed: " + e.toString());
+        }
+    }
+
+    public static void readOwnedCards(Context context) {
+        try {
+            InputStream inputStream = context.openFileInput("owned.csv");
+            if ( inputStream != null ) {
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                String receiveString = "";
+                StringBuilder stringBuilder = new StringBuilder();
+
+                while ( (receiveString = bufferedReader.readLine()) != null ) {
+                    stringBuilder.append("\n").append(receiveString);
+                }
+
+                inputStream.close();
+                cardsOwned.clear();
+                String in = stringBuilder.toString().strip();
+                System.out.println(in);
+                String[] data = in.split(",");
+                for (String id : data) {
+                    if (cardsById.containsKey(id)) {
+                        cardsOwned.add(id);
+                    }
+                }
+            }
+        }
+        catch (Exception e) {
+            System.out.println("Failed to read owned.csv");
+        }
     }
 
     /**

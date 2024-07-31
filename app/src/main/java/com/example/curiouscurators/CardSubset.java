@@ -63,7 +63,6 @@ public class CardSubset {
      * Applies the current filter without clearing the contained subset.
      */
     private void applyFilter(ArrayList<String[]> searchSet) {
-        System.out.println(searchSet.size());
         int wordLength = this.filter.length();
         // Use binary search to find the range of values which begin with the filter
         int low = 0, high = searchSet.size() - 1, rangeStart = -1, rangeEnd = -1;
