@@ -3,8 +3,10 @@ package com.example.curiouscurators;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,9 +24,11 @@ import java.util.concurrent.Executors;
  * Activity to display detailed information and image of a specific card.
  */
 public class SingleCardActivity extends AppCompatActivity {
-    ImageView cardImage;
+    ImageView cardImage, typeImage, setImage;
     TextView cardName, artistName, setName, rarity, localId, category;
+    Button returnButton, addButton;
     ExecutorService downloadThread;
+    Card card;
 
     /**
      * Initializes the activity, setting up the user interface and loading the card details.
@@ -50,21 +54,54 @@ public class SingleCardActivity extends AppCompatActivity {
         if (id == null) {
             id = "xy8-79";
         }
-        Card card = Card.getCardById(id);
+        this.card = Card.getCardById(id);
         this.cardImage = findViewById(R.id.cardImage);
+        this.typeImage = findViewById(R.id.type);
+        this.setImage = findViewById(R.id.setImage);
         this.cardName = findViewById(R.id.name);
         this.artistName = findViewById(R.id.artistName);
         this.setName = findViewById(R.id.setName);
         this.rarity = findViewById(R.id.rarity);
         this.localId = findViewById(R.id.localId);
         this.category = findViewById(R.id.category);
+        this.returnButton = findViewById(R.id.returnButton);
+        this.addButton = findViewById(R.id.addButton);
 
+        this.setImage.setImageDrawable(Card.getLogoById(card.setId));
         this.cardName.setText(card.name);
         this.artistName.setText(card.illustrator);
         this.setName.setText(card.setName);
         this.rarity.setText(card.rarity);
         this.localId.setText(card.localId);
         this.category.setText(card.category);
+
+        if (card.category.equals("Pokemon")) {
+            Card.Pokemon pkm = (Card.Pokemon) card;
+            String type = pkm.types.get(0);
+            typeImage.setImageDrawable(Card.getEnergySymbol(type));
+        }
+        else if (card.category.equals("Energy")) {
+            Card.Energy energy = (Card.Energy) card;
+            String type = energy.type;
+            typeImage.setImageDrawable(Card.getEnergySymbol(type));
+        }
+
+        this.setAddButtonText();
+        this.addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                boolean owned = Card.isCardOwned(card.globalId);
+                Card.setCardOwned(card.globalId, !owned);
+                setAddButtonText();
+            }
+        });
+
+        this.returnButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               SingleCardActivity.this.finish();
+            }
+        });
 
         // Set up an executor for downloading the card image in a background thread
         this.downloadThread = Executors.newSingleThreadExecutor();
@@ -82,10 +119,19 @@ public class SingleCardActivity extends AppCompatActivity {
                         }
                     });
                 } catch (IOException e) {
-                    throw new RuntimeException(e); // Handle potential IO errors
+                    System.out.println("Could not get image");
                 }
             }
         });
+    }
+
+    private void setAddButtonText() {
+        boolean owned = Card.isCardOwned(this.card.globalId);
+        if (owned) {
+            this.addButton.setText("Remove from Collection");
+        } else {
+            this.addButton.setText("Add to Collection");
+        }
     }
 }
 

@@ -33,7 +33,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:gravity="center|fill_vertical"
+                    android:gravity="fill_vertical"
                     android:text="Pokemon Name"
                     android:textSize="25sp"
                     android:textStyle="bold" />
@@ -43,7 +43,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.1"
-                    app:srcCompat="@drawable/energy_dragon" />
+                    app:srcCompat="@drawable/energy_colorless" />
 
             </LinearLayout>
 
@@ -64,7 +64,7 @@
                     android:textSize="25sp" />
 
                 <ImageView
-                    android:id="@+id/imageView3"
+                    android:id="@+id/setImage"
                     android:layout_width="85dp"
                     android:layout_height="40dp"
                     android:scaleType="fitCenter"
@@ -129,21 +129,18 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button"
+                    android:id="@+id/returnButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@drawable/bottom_background"
-                    android:text="Back to Search" />
+                    android:text="Return" />
 
                 <Button
-                    android:id="@+id/button2"
+                    android:id="@+id/addButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@color/bled"
                     android:text="Add to Collection" />
-
             </LinearLayout>
 
             <ImageView

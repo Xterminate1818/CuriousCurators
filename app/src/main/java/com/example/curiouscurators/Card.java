@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -172,12 +173,19 @@ public abstract class Card {
         }
     }
 
+    /**
+     * Get all owned cards
+     * @return ArrayList of owned cards
+     */
     public static ArrayList<Card> getOwnedCards() {
         ArrayList<Card> cards = new ArrayList<>();
         for (String globalId : cardsOwned) {
             cards.add(Card.getCardById(globalId));
         }
         return cards;
+    }
+
+    public static void writeOwnedCards(Context context) {
     }
 
     /**
