@@ -13,7 +13,7 @@ public class CardSubset {
     public CardSubset() {
         this.filter = "";
         this.filterType = FilterType.Name;
-        this.contained = new ArrayList<String[]>();
+        this.contained = new ArrayList<>();
         this.resetAndFilter();
     }
     private ArrayList<String[]> getSearchSet() {
@@ -30,9 +30,9 @@ public class CardSubset {
     }
 
     private void resetAndFilter() {
-        System.out.println("reset");
         this.contained.clear();
         ArrayList<String[]> searchSet = this.getSearchSet();
+        assert searchSet != null;
         for (String[] card : searchSet) {
             String name = card[0];
             if (name.startsWith(this.filter)) {
@@ -42,10 +42,8 @@ public class CardSubset {
     }
 
     private void keepAndFilter() {
-        System.out.println("keep");
-        ArrayList<String[]> next = new ArrayList<String[]>();
-        ArrayList<String[]> searchSet = this.getSearchSet();
-        for (String[] card : searchSet) {
+        ArrayList<String[]> next = new ArrayList<>();
+        for (String[] card : this.contained) {
             String name = card[0];
             if (name.startsWith(this.filter)) {
                 next.add(card);

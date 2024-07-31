@@ -126,6 +126,7 @@ class SearchRecyclerViewAdapter
         holder.name.setText(current.name);
         holder.setLogo.setImageDrawable(Card.getLogoById(current.setId));
         holder.artist.setText(current.illustrator);
+        holder.set.setText(current.setName);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -142,7 +143,7 @@ class SearchRecyclerViewAdapter
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView name, artist;
+        TextView name, artist, set;
         ImageView setLogo;
 
         public MyViewHolder(@NonNull View itemView) {
@@ -150,6 +151,7 @@ class SearchRecyclerViewAdapter
             name = itemView.findViewById(R.id.cardName);
             setLogo = itemView.findViewById(R.id.setLogo);
             artist = itemView.findViewById(R.id.artistName);
+            set = itemView.findViewById(R.id.setName);
         }
     }
 }

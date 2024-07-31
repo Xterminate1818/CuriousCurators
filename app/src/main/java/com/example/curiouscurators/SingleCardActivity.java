@@ -46,8 +46,8 @@ public class SingleCardActivity extends AppCompatActivity {
         }
         Card card = Card.getCardById(id);
         this.cardName.setText(card.name);
-        this.setName.setText(card.setName);
-        this.artistName.setText(card.illustrator);
+        this.setName.setText(getString(R.string.setNamePrefix, card.setName));
+        this.artistName.setText(getString(R.string.artistNamePrefix, card.illustrator));
 
         this.downloadThread = Executors.newSingleThreadExecutor();
         this.downloadThread.execute(new Runnable() {
