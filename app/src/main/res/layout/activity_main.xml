@@ -110,21 +110,20 @@
       app:layout_constraintHorizontal_bias="0.50"
       app:layout_constraintStart_toStartOf="parent" />
 
+
   <com.google.android.material.bottomnavigation.BottomNavigationView
       android:id="@+id/bottomNavigationView"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginStart="20dp"
-      android:layout_marginEnd="20dp"
+      android:background="@color/white"
       android:elevation="2dp"
-      android:background="@drawable/bottom_background"
       app:itemIconSize="30dp"
-      app:itemIconTint="@drawable/item_selector"
       app:itemRippleColor="@android:color/transparent"
+      app:itemTextColor="@color/black"
       app:labelVisibilityMode="labeled"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:menu="@menu/bottom_menu"/>
+      app:menu="@menu/bottom_menu" />
 
   </androidx.constraintlayout.widget.ConstraintLayout>

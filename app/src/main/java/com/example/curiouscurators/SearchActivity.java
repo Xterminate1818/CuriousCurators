@@ -88,7 +88,7 @@ public class SearchActivity extends AppCompatActivity {
         this.searchType = findViewById(R.id.searchType);
         this.searchAdapter = ArrayAdapter.createFromResource(
                 this, R.array.searchDropdown,
-                android.R.layout.simple_spinner_item);
+                R.layout.spinner_item);
         this.searchAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         this.searchType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @SuppressLint("NotifyDataSetChanged")

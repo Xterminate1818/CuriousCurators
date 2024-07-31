@@ -14,16 +14,16 @@ import androidx.core.view.WindowInsetsCompat;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.net.URL;
 
 /**
  * Activity to display detailed information and image of a specific card.
  */
 public class SingleCardActivity extends AppCompatActivity {
     ImageView cardImage;
-    TextView cardName, artistName, setName;
+    TextView cardName, artistName, setName, rarity, localId, category;
     ExecutorService downloadThread;
 
     /**
@@ -46,25 +46,25 @@ public class SingleCardActivity extends AppCompatActivity {
             return insets;
         });
         Card.initialize(this);
-
-        // Hook up the UI components to their corresponding views in the layout
-        this.cardImage = findViewById(R.id.cardImage);
-        this.cardName = findViewById(R.id.cardName);
-        this.artistName = findViewById(R.id.artistName);
-        this.setName = findViewById(R.id.setName);
-
-        // Retrieve the card ID from the intent or use a default for demonstration
-        String defaultId = "xy8-79";
         String id = getIntent().getStringExtra("id");
         if (id == null) {
-            id = defaultId;
+            id = "xy8-79";
         }
         Card card = Card.getCardById(id);
+        this.cardImage = findViewById(R.id.cardImage);
+        this.cardName = findViewById(R.id.name);
+        this.artistName = findViewById(R.id.artistName);
+        this.setName = findViewById(R.id.setName);
+        this.rarity = findViewById(R.id.rarity);
+        this.localId = findViewById(R.id.localId);
+        this.category = findViewById(R.id.category);
 
-        // Update UI elements with the card details
         this.cardName.setText(card.name);
-        this.setName.setText(getString(R.string.setNamePrefix, card.setName));
-        this.artistName.setText(getString(R.string.artistNamePrefix, card.illustrator));
+        this.artistName.setText(card.illustrator);
+        this.setName.setText(card.setName);
+        this.rarity.setText(card.rarity);
+        this.localId.setText(card.localId);
+        this.category.setText(card.category);
 
         // Set up an executor for downloading the card image in a background thread
         this.downloadThread = Executors.newSingleThreadExecutor();
