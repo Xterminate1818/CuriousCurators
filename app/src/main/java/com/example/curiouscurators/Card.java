@@ -125,6 +125,7 @@ public abstract class Card {
         return in.strip()
                 .toLowerCase()
                 .replaceAll("'", "")
+                .replaceAll("\"", "")
                 .replaceAll("\\.", "");
     }
 

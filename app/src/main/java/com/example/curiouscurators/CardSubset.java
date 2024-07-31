@@ -30,6 +30,7 @@ public class CardSubset {
     }
 
     private void resetAndFilter() {
+        System.out.println("reset");
         this.contained.clear();
         ArrayList<String[]> searchSet = this.getSearchSet();
         for (String[] card : searchSet) {
@@ -41,6 +42,7 @@ public class CardSubset {
     }
 
     private void keepAndFilter() {
+        System.out.println("keep");
         ArrayList<String[]> next = new ArrayList<String[]>();
         ArrayList<String[]> searchSet = this.getSearchSet();
         for (String[] card : searchSet) {
@@ -58,7 +60,7 @@ public class CardSubset {
 
     public void setFilter(String newFilter) {
         newFilter = Card.cleanName(newFilter);
-        if (this.filter.startsWith(newFilter)) {
+        if (newFilter.startsWith(this.filter)) {
             this.filter = newFilter;
             this.keepAndFilter();
         } else {
