@@ -44,6 +44,10 @@ public class HomeView extends AppCompatActivity {
                 startActivity(new Intent(getApplicationContext(), SearchActivity.class));
                 finish();
                 return true;
+            } else if (itemId == R.id.bottom_collection) {
+                startActivity(new Intent(getApplicationContext(), CollectionView.class));
+                finish();
+                return true;
             }
             return false;
         });

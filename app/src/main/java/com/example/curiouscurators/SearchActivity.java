@@ -70,6 +70,10 @@ public class SearchActivity extends AppCompatActivity {
                 return true;
             } else if (itemId == R.id.bottom_search) {
                 return true;
+            } else if (itemId == R.id.bottom_collection) {
+                startActivity(new Intent(getApplicationContext(), CollectionView.class));
+                finish();
+                return true;
             }
             return false;
         });
