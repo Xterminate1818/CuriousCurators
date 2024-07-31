@@ -2,6 +2,7 @@ package com.example.curiouscurators;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -125,6 +126,14 @@ class SearchRecyclerViewAdapter
         holder.name.setText(current.name);
         holder.setLogo.setImageDrawable(Card.getLogoById(current.setId));
         holder.artist.setText(current.illustrator);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(context, SingleCardActivity.class);
+                i.putExtra("id", current.globalId);
+                context.startActivity(i);
+            }
+        });
     }
 
     @Override

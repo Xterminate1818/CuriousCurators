@@ -15,7 +15,9 @@
         android:theme="@style/Theme.CuriousCurators"
         tools:targetApi="31">
 
-
+        <activity
+            android:name=".SingleCardActivity"
+            android:exported="true" />
         <activity
             android:name=".SearchActivity"
             android:exported="true" />
