@@ -13,6 +13,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * Abstract base class representing a generic card.
@@ -23,14 +24,18 @@ public abstract class Card {
     private static boolean initialized = false;
     // Card objects indexed by global ID
     private static final HashMap<String, Card> cardsById = new HashMap<>();
+    // Set of owned cards
+    private static final HashSet<String> cardsOwned = new HashSet<>();
     // Sorted table of {name, globalId}
     private static final ArrayList<String[]> cardsByName = new ArrayList<>();
     // Sorted table of {illustrator, globalId}
     private static final ArrayList<String[]> cardsByArtist = new ArrayList<>();
     // Sorted table of {illustrator, globalId}
     private static final ArrayList<String[]> cardsBySet= new ArrayList<>();
-
+    // Table of set logos by setId
     private static final HashMap<String, Drawable> setLogos = new HashMap<>();
+    // Table of energy symbols
+    private static final HashMap<String, Drawable> energySymbols = new HashMap<>();
 
     public final String globalId,
             localId,
@@ -129,10 +134,50 @@ public abstract class Card {
                 Drawable logo = ContextCompat.getDrawable(context, logoId);
                 Card.setLogos.put(name, logo);
             }
+            energySymbols.put("Colorless", ContextCompat.getDrawable(context, R.drawable.energy_colorless));
+            energySymbols.put("Darkness", ContextCompat.getDrawable(context, R.drawable.energy_darkness));
+            energySymbols.put("Dragon", ContextCompat.getDrawable(context, R.drawable.energy_dragon));
+            energySymbols.put("Fairy", ContextCompat.getDrawable(context, R.drawable.energy_fairy));
+            energySymbols.put("Fighting", ContextCompat.getDrawable(context, R.drawable.energy_fighting));
+            energySymbols.put("Fire", ContextCompat.getDrawable(context, R.drawable.energy_fire));
+            energySymbols.put("Grass", ContextCompat.getDrawable(context, R.drawable.energy_grass));
+            energySymbols.put("Lightning", ContextCompat.getDrawable(context, R.drawable.energy_lightning));
+            energySymbols.put("Metal", ContextCompat.getDrawable(context, R.drawable.energy_metal));
+            energySymbols.put("Psychic", ContextCompat.getDrawable(context, R.drawable.energy_psychic));
+            energySymbols.put("Water", ContextCompat.getDrawable(context, R.drawable.energy_water));
             Card.initialized = true;
             setNames.recycle();
             setLogos.recycle();
         }
+    }
+
+    /**
+     * Check if a card is owned
+     * @param globalId the globalId of the card to check
+     * @return Whether the card is owned
+     */
+    public static boolean isCardOwned(String globalId) {
+        return Card.cardsOwned.contains(globalId);
+    }
+
+    /**
+     * Modify the ownership status of a card
+     * @param globalId the globalId of the card to modify
+     */
+    public static void setCardOwned(String globalId, boolean state) {
+        if (state) {
+            Card.cardsOwned.add(globalId);
+        } else {
+            Card.cardsOwned.remove(globalId);
+        }
+    }
+
+    public static ArrayList<Card> getOwnedCards() {
+        ArrayList<Card> cards = new ArrayList<>();
+        for (String globalId : cardsOwned) {
+            cards.add(Card.getCardById(globalId));
+        }
+        return cards;
     }
 
     /**
@@ -172,6 +217,23 @@ public abstract class Card {
         Drawable d = setLogos.get(id);
         if (d == null) {
             return setLogos.get("base1");
+        } else {
+            return d;
+        }
+    }
+
+    /**
+     * Retrieves an energy symbol.
+     * @param id the energy symbol name
+     * @return the Drawable energy symbol
+     */
+    public static Drawable getEnergySymbol(String id) {
+        if (!Card.initialized) {
+            throw new RuntimeException("Cards not initialized. Do `Card.initialize()` first.");
+        }
+        Drawable d = energySymbols.get(id);
+        if (d == null) {
+            return energySymbols.get("Colorless");
         } else {
             return d;
         }
@@ -220,7 +282,7 @@ public abstract class Card {
      * These cards provide energy necessary for Pokemon to perform actions
      */
     public static class Energy extends Card {
-        private final String effect, type;
+        public final String effect, type;
 
         /**
          * Constructs an Energy card with specific attributes related to energy effects.
@@ -243,7 +305,7 @@ public abstract class Card {
      * Represents a Pokemon card, detailing a creature with various attributes.
      */
     public static class Pokemon extends Card {
-        private final String evolveFrom,
+        public final String evolveFrom,
                 description,
                 stage,
                 suffix,
@@ -292,8 +354,8 @@ public abstract class Card {
          * Inner class representing an attack associated with a Pokemon card.
          */
         public static class Attack {
-            private final ArrayList<String> cost;
-            private final String name, effect, damage;
+            public final ArrayList<String> cost;
+            public final String name, effect, damage;
 
             /**
              * Constructs an Attack with specific attributes like cost and effect.
@@ -316,7 +378,7 @@ public abstract class Card {
      * Represents a Trainer card, providing special effects or actions within the game.
      */
     public static class Trainer extends Card {
-        private final String effect, type;
+        public final String effect, type;
 
         /**
          * Constructs a Trainer card with attributes specific to game mechanics.
