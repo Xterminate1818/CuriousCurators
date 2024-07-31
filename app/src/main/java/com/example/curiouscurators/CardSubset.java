@@ -9,6 +9,9 @@ public class CardSubset {
     public enum FilterType {
         Name, Artist, Set
     }
+    public enum SortType {
+        Name, Artist, Set
+    }
     String filter;
     FilterType filterType;
     ArrayList<String[]> contained;
@@ -60,7 +63,6 @@ public class CardSubset {
      * Applies the current filter without clearing the contained subset.
      */
     private void applyFilter(ArrayList<String[]> searchSet) {
-        ArrayList<String[]> next = new ArrayList<>();
         System.out.println(searchSet.size());
         int wordLength = this.filter.length();
         // Use binary search to find the range of values which begin with the filter
@@ -106,14 +108,7 @@ public class CardSubset {
         }
 
         List<String[]> reducedList = searchSet.subList(rangeStart, rangeEnd);
-
-        for (String[] card : reducedList) {
-            String name = card[0];
-            if (name.startsWith(this.filter)) {
-                next.add(card);
-            }
-        }
-        this.contained = next;
+        this.contained = new ArrayList<>(reducedList);
     }
 
     /**

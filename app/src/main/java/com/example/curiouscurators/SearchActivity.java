@@ -38,8 +38,8 @@ public class SearchActivity extends AppCompatActivity {
     private RecyclerView cardRecycler;
     private SearchRecyclerViewAdapter cardAdapter;
     private CardSubset searchSubset;
-    private Spinner searchType;
-    private ArrayAdapter<CharSequence> searchAdapter;
+    private Spinner searchType, sortType;
+    private ArrayAdapter<CharSequence> searchAdapter, sortAdapter;
 
     /**
      * Called when the activity is first created.
@@ -115,6 +115,14 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
         this.searchType.setAdapter(this.searchAdapter);
+
+        this.sortType = findViewById(R.id.sortType);
+        this.sortAdapter = ArrayAdapter.createFromResource(
+                this, R.array.sortDropdown,
+                R.layout.spinner_item);
+        this.sortAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        this.sortType.setAdapter(this.sortAdapter);
+
         this.searchSubset = new CardSubset();
         this.cardAdapter = new SearchRecyclerViewAdapter(this, this.searchSubset);
         this.cardRecycler.setAdapter(this.cardAdapter);

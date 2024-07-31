@@ -7,6 +7,11 @@
         <item>Search by artist</item>
         <item>Search by set</item>
     </string-array>
+    <string-array name="sortDropdown">
+        <item>Sort by name</item>
+        <item>Sort by artist</item>
+        <item>Sort by set</item>
+    </string-array>
     <array name="setNames">
         <item>base1</item>
         <item>base2</item>
