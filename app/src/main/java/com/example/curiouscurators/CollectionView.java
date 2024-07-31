@@ -8,10 +8,25 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+import androidx.annotation.NonNull;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.util.ArrayList;
+
 public class CollectionView extends AppCompatActivity {
+    private RecyclerView collectionRecycler;
+    private CollectionRecyclerViewAdapter collectionAdapter;
+    private ArrayList<Card> ownedCards;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
@@ -42,5 +57,70 @@ public class CollectionView extends AppCompatActivity {
             return insets;
         });
         Card.initialize(this);
+
+        this.ownedCards = Card.getOwnedCards();
+
+        this.collectionRecycler = findViewById(R.id.collectionRecyclerView);
+        this.collectionAdapter = new CollectionRecyclerViewAdapter(this, this.ownedCards);
+        this.collectionRecycler.setAdapter(this.collectionAdapter);
+        this.collectionRecycler.setLayoutManager(new LinearLayoutManager(this));
+    }
+}
+
+/**
+ * Adapter for displaying a list of owned cards in a RecyclerView within CollectionView.
+ */
+class CollectionRecyclerViewAdapter
+        extends RecyclerView.Adapter<CollectionRecyclerViewAdapter.MyViewHolder> {
+    Context context;
+    ArrayList<Card> cards;
+
+    public CollectionRecyclerViewAdapter(Context context, ArrayList<Card> cards) {
+        this.context = context;
+        this.cards = cards;
+    }
+
+    @NonNull
+    @Override
+    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View view = inflater.inflate(R.layout.search_row, parent, false);
+        return new MyViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+        Card current = this.cards.get(position);
+        holder.name.setText(current.name);
+        holder.setLogo.setImageDrawable(Card.getLogoById(current.setId));
+        holder.artist.setText(current.illustrator);
+        holder.set.setText(current.setName);
+        holder.itemView.setOnClickListener(view -> {
+            Intent i = new Intent(context, SingleCardActivity.class);
+            i.putExtra("id", current.globalId);
+            context.startActivity(i);
+        });
+    }
+
+    @Override
+    public int getItemCount() {
+        return this.cards.size();
+    }
+
+    /**
+     * ViewHolder for the card items in the RecyclerView.
+     * Holds references to the views in each item of the RecyclerView.
+     */
+    public static class MyViewHolder extends RecyclerView.ViewHolder {
+        TextView name, artist, set;
+        ImageView setLogo;
+
+        public MyViewHolder(@NonNull View itemView) {
+            super(itemView);
+            name = itemView.findViewById(R.id.cardName);
+            setLogo = itemView.findViewById(R.id.setLogo);
+            artist = itemView.findViewById(R.id.artistName);
+            set = itemView.findViewById(R.id.setName);
+        }
     }
 }
