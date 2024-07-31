@@ -1,5 +1,6 @@
 package com.example.curiouscurators;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
@@ -8,36 +9,35 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-/**
- * The HomeView class serves as the main activity for the application,
- * setting up the user interface and initializing necessary components on creation.
- */
-public class HomeView extends AppCompatActivity {
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-    /**
-     * Called when the activity is starting.
-     * This is where most initialization should go: calling setContentView(int) to inflate
-     * the activity's UI, using findViewById(int) to programmatically interact with widgets in the UI,
-     * calling managedQuery(Uri, String[], String, String[], String) to retrieve cursors for data being displayed, etc.
-     *
-     * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
-     *                           this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle).
-     *                           Note: Otherwise it is null.
-     */
+public class HomeView extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Enable edge-to-edge display where UI components can extend into the window insets areas
         EdgeToEdge.enable(this);
-        // Set the content view to the layout of the main activity
         setContentView(R.layout.activity_main);
-        // Apply window insets as padding for the main view to handle system bars
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        bottomNavigationView.setSelectedItemId(R.id.bottom_home);
+
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+            if (itemId == R.id.bottom_home) {
+                return true;
+            } else if (itemId == R.id.bottom_search) {
+                startActivity(new Intent(getApplicationContext(), SearchActivity.class));
+                finish();
+                return true;
+            }
+            return false;
+        });
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return WindowInsetsCompat.CONSUMED;
+            return insets;
         });
-        // Initialize the Card data when the view is created
         Card.initialize(this);
     }
 }

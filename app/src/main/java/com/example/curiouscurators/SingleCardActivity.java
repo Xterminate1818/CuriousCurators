@@ -63,8 +63,8 @@ public class SingleCardActivity extends AppCompatActivity {
 
         // Update UI elements with the card details
         this.cardName.setText(card.name);
-        this.setName.setText(card.setName);
-        this.artistName.setText(card.illustrator);
+        this.setName.setText(getString(R.string.setNamePrefix, card.setName));
+        this.artistName.setText(getString(R.string.artistNamePrefix, card.illustrator));
 
         // Set up an executor for downloading the card image in a background thread
         this.downloadThread = Executors.newSingleThreadExecutor();
