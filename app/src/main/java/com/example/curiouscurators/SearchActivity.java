@@ -28,12 +28,30 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+/**
+ * SearchActivity provides functionality for searching and filtering a list of cards.
+ * This activity includes a RecyclerView for displaying search results, a SearchView for query input,
+ * and a Spinner for selecting filter types. It initializes the UI components and sets up listeners
+ * for user interactions.
+ */
 public class SearchActivity extends AppCompatActivity {
     private RecyclerView cardRecycler;
     private SearchRecyclerViewAdapter cardAdapter;
     private CardSubset searchSubset;
     private Spinner searchType;
     private ArrayAdapter<CharSequence> searchAdapter;
+
+    /**
+     * Called when the activity is first created.
+     * <p>
+     * Sets up the layout, initializes the bottom navigation view, configures the search filter spinner,
+     * and sets up the search functionality.
+     * </p>
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
+     *                           this Bundle contains the data it most recently supplied in {@link #onSaveInstanceState(Bundle)}.
+     *                           Otherwise, it is null.
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,11 +136,23 @@ public class SearchActivity extends AppCompatActivity {
     }
 }
 
+/**
+ * Adapter for displaying a list of cards in a RecyclerView within SearchActivity.
+ * This adapter binds card data to the views in the RecyclerView and handles item click events
+ * to navigate to the detailed view of a selected card.
+ */
 class SearchRecyclerViewAdapter
         extends RecyclerView.Adapter
         <SearchRecyclerViewAdapter.MyViewHolder> {
     Context context;
     CardSubset cards;
+
+    /**
+     * Constructs a SearchRecyclerViewAdapter.
+     *
+     * @param context The context used to access resources and start activities.
+     * @param subset  The subset of cards to be displayed in the RecyclerView.
+     */
 
     public SearchRecyclerViewAdapter(Context context, CardSubset subset) {
         this.context = context;
@@ -160,10 +190,19 @@ class SearchRecyclerViewAdapter
         return this.cards.getContained().size();
     }
 
+    /**
+     * ViewHolder for the card items in the RecyclerView.
+     * Holds references to the views in each item of the RecyclerView.
+     */
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         TextView name, artist, set;
         ImageView setLogo;
 
+        /**
+         * Constructs a MyViewHolder.
+         *
+         * @param itemView The view of the item in the RecyclerView.
+         */
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.cardName);

@@ -11,7 +11,22 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+/**
+ * HomeView is an activity that serves as the main screen of the card app.
+ * It includes a bottom navigation bar for navigating between different sections of the app.
+ * This activity initializes the bottom navigation view, sets up navigation item selection handling,
+ * and adjusts padding for window insets to ensure content is not obscured by system bars.
+ */
 public class HomeView extends AppCompatActivity {
+    /**
+     * Called when the activity is first created.
+     * This method sets up the layout, initializes the bottom navigation view, handles item selections,
+     * and applies window insets for proper padding.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
+     *                           this Bundle contains the data it most recently supplied in {@link #onSaveInstanceState(Bundle)}.
+     *                           Otherwise, it is null.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
