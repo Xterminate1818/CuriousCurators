@@ -217,7 +217,7 @@ public abstract class Card {
 
     /**
      * Represents a specific type of card: Energy.
-     * These cards provide energy necessary for Pokemon to perform actions.
+     * These cards provide energy necessary for Pokemon to perform actions
      */
     public static class Energy extends Card {
         private final String effect, type;

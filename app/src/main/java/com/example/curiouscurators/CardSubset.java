@@ -11,12 +11,21 @@ public class CardSubset {
     FilterType filterType;
     ArrayList<String[]> contained;
 
+    /**
+     * Constructs a CardSubset with default settings.
+     * Initializes the subset with a filter type of Name and an empty filter string.
+     */
     public CardSubset() {
         this.filter = "";
         this.filterType = FilterType.Name;
         this.contained = new ArrayList<>();
         this.applyFilter(this.getSearchSet());
     }
+
+    /**
+     * Retrieves the appropriate card set based on the current filter type.
+     * @return ArrayList of String arrays representing the filtered set of cards.
+     */
     private ArrayList<String[]> getSearchSet() {
         switch (this.filterType) {
             case Name:
@@ -26,10 +35,27 @@ public class CardSubset {
             case Set:
                 return Card.getCardsBySet();
         }
-        return null;
+        return null; // Unreachable but needed for compilation
     }
 
+    /**
+     * Resets the current filter and applies it anew to populate the contained subset.
+     */
+    private void resetAndFilter() {
+        this.contained.clear();
+        ArrayList<String[]> searchSet = this.getSearchSet();
+        assert searchSet != null;
+        for (String[] card : searchSet) {
+            String name = card[0];
+            if (name.startsWith(this.filter)) {
+                this.contained.add(card);
+            }
+        }
+    }
 
+    /**
+     * Applies the current filter without clearing the contained subset.
+     */
     private void applyFilter(ArrayList<String[]> searchSet) {
         ArrayList<String[]> next = new ArrayList<>();
         System.out.println(searchSet.size());
@@ -87,10 +113,18 @@ public class CardSubset {
         this.contained = next;
     }
 
+    /**
+     * Gets the subset of cards that match the current filter settings.
+     * @return ArrayList of String arrays representing the filtered cards.
+     */
     public ArrayList<String[]> getContained() {
         return this.contained;
     }
 
+    /**
+     * Sets the filter string and updates the contained subset accordingly.
+     * @param newFilter the new filter string to apply.
+     */
     public void setFilter(String newFilter) {
         newFilter = Card.cleanName(newFilter);
         if (newFilter.startsWith(this.filter)) {
@@ -103,6 +137,10 @@ public class CardSubset {
         }
     }
 
+    /**
+     * Sets the type of filter to apply and resets the filter accordingly.
+     * @param filterType the type of filter to apply (Name, Artist, or Set)
+     */
     public void setFilterType(FilterType filterType) {
         this.filterType = filterType;
         this.contained.clear();
