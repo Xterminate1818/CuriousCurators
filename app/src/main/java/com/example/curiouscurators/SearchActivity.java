@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.SearchView;
@@ -25,12 +26,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 public class SearchActivity extends AppCompatActivity {
-    private static final String[] searchTypesArray = {"By name", "By artist"};
     private RecyclerView cardRecycler;
     private SearchRecyclerViewAdapter cardAdapter;
     private CardSubset searchSubset;
     private Spinner searchType;
-    private ArrayAdapter<String> searchAdapter;
+    private ArrayAdapter<CharSequence> searchAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +45,35 @@ public class SearchActivity extends AppCompatActivity {
         Card.initialize(this);
         this.cardRecycler = findViewById(R.id.searchRecyclerView);
         this.searchType = findViewById(R.id.searchType);
-        this.searchAdapter = new ArrayAdapter<String>(this, R.id.searchType, searchTypesArray);
+        this.searchAdapter = ArrayAdapter.createFromResource(
+                this, R.array.searchDropdown,
+                android.R.layout.simple_spinner_item);
+        this.searchAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        this.searchType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @SuppressLint("NotifyDataSetChanged")
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long id) {
+                System.out.println(pos);
+                switch(pos) {
+                    case 0:
+                        SearchActivity.this.searchSubset.setFilterType(CardSubset.FilterType.Name);
+                        break;
+                    case 1:
+                        SearchActivity.this.searchSubset.setFilterType(CardSubset.FilterType.Artist);
+                        break;
+                    case 2:
+                        SearchActivity.this.searchSubset.setFilterType(CardSubset.FilterType.Set);
+                        break;
+                }
+                SearchActivity.this.cardAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                SearchActivity.this.searchSubset.setFilterType(CardSubset.FilterType.Name);
+            }
+        });
+        this.searchType.setAdapter(this.searchAdapter);
         this.searchSubset = new CardSubset();
         this.cardAdapter = new SearchRecyclerViewAdapter(this, this.searchSubset);
         this.cardRecycler.setAdapter(this.cardAdapter);
@@ -55,7 +83,7 @@ public class SearchActivity extends AppCompatActivity {
             @SuppressLint("NotifyDataSetChanged")
             @Override
             public boolean onQueryTextSubmit(String s) {
-                SearchActivity.this.searchSubset.setNameFilter(s);
+                SearchActivity.this.searchSubset.setFilter(s);
                 SearchActivity.this.cardAdapter.notifyDataSetChanged();
                 return true;
             }
@@ -63,7 +91,7 @@ public class SearchActivity extends AppCompatActivity {
             @SuppressLint("NotifyDataSetChanged")
             @Override
             public boolean onQueryTextChange(String s) {
-                SearchActivity.this.searchSubset.setNameFilter(s);
+                SearchActivity.this.searchSubset.setFilter(s);
                 SearchActivity.this.cardAdapter.notifyDataSetChanged();
                 return true;
             }

@@ -23,6 +23,8 @@ public abstract class Card {
     private static ArrayList<String[]> cardsByName = new ArrayList<String[]>();
     // Sorted table of {illustrator, globalId}
     private static ArrayList<String[]> cardsByArtist = new ArrayList<String[]>();
+    // Sorted table of {illustrator, globalId}
+    private static ArrayList<String[]> cardsBySet= new ArrayList<String[]>();
 
     private static HashMap<String, Drawable> setLogos = new HashMap<String, Drawable>();
 
@@ -80,6 +82,7 @@ public abstract class Card {
                     Card.cardsById.put(c.globalId, c);
                     Card.cardsByName.add(new String[] {cleanName(c.name), c.globalId});
                     Card.cardsByArtist.add(new String[] {cleanName(c.illustrator), c.globalId});
+                    Card.cardsBySet.add(new String[] {cleanName(c.setName), c.globalId});
                 }
                 // Sort cards by name
                 Card.cardsByName.sort(new Comparator<String[]>() {
@@ -89,6 +92,13 @@ public abstract class Card {
                     }
                 });
                 // Sort cards by artist
+                Card.cardsByArtist.sort(new Comparator<String[]>() {
+                    @Override
+                    public int compare(String[] s1, String[] s2) {
+                        return s1[0].compareTo(s2[0]);
+                    }
+                });
+                // Sort cards by set
                 Card.cardsByArtist.sort(new Comparator<String[]>() {
                     @Override
                     public int compare(String[] s1, String[] s2) {
@@ -152,6 +162,14 @@ public abstract class Card {
             throw new RuntimeException("Cards not initialized. Do `Card.initialize()` first.");
         }
         return cardsByArtist;
+    }
+
+    // Get card sorted list, throw exception if not initialized
+    public static ArrayList<String[]> getCardsBySet() {
+        if (!Card.initialized) {
+            throw new RuntimeException("Cards not initialized. Do `Card.initialize()` first.");
+        }
+        return cardsBySet;
     }
 
     @NonNull

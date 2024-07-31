@@ -1,5 +1,10 @@
 <resources>
     <string name="app_name">CuriousCurators</string>
+    <string-array name="searchDropdown">
+        <item>Search by name</item>
+        <item>Search by artist</item>
+        <item>Search by set</item>
+    </string-array>
     <array name="setNames">
         <item>base1</item>
         <item>base2</item>

@@ -3,33 +3,38 @@ package com.example.curiouscurators;
 import java.util.ArrayList;
 
 public class CardSubset {
-    String nameFilter, artistFilter, setFilter;
-    boolean ownedFilter;
-
+    public enum FilterType {
+        Name, Artist, Set
+    }
+    String filter;
+    FilterType filterType;
     ArrayList<String[]> contained;
 
-    public CardSubset(String nameFilter, String artistFilter, String setFilter, boolean ownedFilter) {
-        this.nameFilter = nameFilter;
-        this.artistFilter = artistFilter;
-        this.setFilter = setFilter;
-        this.ownedFilter = ownedFilter;
+    public CardSubset() {
+        this.filter = "";
+        this.filterType = FilterType.Name;
         this.contained = new ArrayList<String[]>();
         this.resetAndFilter();
     }
-    public CardSubset() {
-        this.nameFilter = "";
-        this.artistFilter = "";
-        this.setFilter = "";
-        this.ownedFilter = false;
-        this.contained = new ArrayList<String[]>();
-        this.resetAndFilter();
+    private ArrayList<String[]> getSearchSet() {
+        switch (this.filterType) {
+            case Name:
+                return Card.getCardsByName();
+            case Artist:
+                return Card.getCardsByArtist();
+            case Set:
+                return Card.getCardsBySet();
+        }
+        // Unreachable
+        return null;
     }
 
     private void resetAndFilter() {
         this.contained.clear();
-        for (String[] card : Card.getCardsByName()) {
+        ArrayList<String[]> searchSet = this.getSearchSet();
+        for (String[] card : searchSet) {
             String name = card[0];
-            if (name.startsWith(this.nameFilter)) {
+            if (name.startsWith(this.filter)) {
                 this.contained.add(card);
             }
         }
@@ -37,9 +42,10 @@ public class CardSubset {
 
     private void keepAndFilter() {
         ArrayList<String[]> next = new ArrayList<String[]>();
-        for (String[] card : this.getContained()) {
+        ArrayList<String[]> searchSet = this.getSearchSet();
+        for (String[] card : searchSet) {
             String name = card[0];
-            if (name.startsWith(this.nameFilter)) {
+            if (name.startsWith(this.filter)) {
                 next.add(card);
             }
         }
@@ -50,30 +56,19 @@ public class CardSubset {
         return this.contained;
     }
 
-    public void setNameFilter(String newNameFilter) {
-        if (this.nameFilter.startsWith(newNameFilter)) {
-            this.nameFilter = newNameFilter;
-            this.resetAndFilter();
-            System.out.println("reset");
-        } else {
-            this.nameFilter = newNameFilter;
+    public void setFilter(String newFilter) {
+        newFilter = Card.cleanName(newFilter);
+        if (this.filter.startsWith(newFilter)) {
+            this.filter = newFilter;
             this.keepAndFilter();
-            System.out.println("keep");
+        } else {
+            this.filter = newFilter;
+            this.resetAndFilter();
         }
     }
 
-    public void setArtistFilter(String artistFilter) {
-        this.artistFilter = artistFilter;
-        this.resetAndFilter();
-    }
-
-    public void setSetFilter(String setFilter) {
-        this.setFilter = setFilter;
-        this.resetAndFilter();
-    }
-
-    public void setOwnedFilter(boolean ownedFilter) {
-        this.ownedFilter = ownedFilter;
+    public void setFilterType(FilterType filterType) {
+        this.filterType = filterType;
         this.resetAndFilter();
     }
 }
