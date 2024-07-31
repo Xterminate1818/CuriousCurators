@@ -14,6 +14,10 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 
+/**
+ * Abstract base class representing a generic card.
+ * This class provides shared attributes and functionality for all types of cards.
+ */
 public abstract class Card {
     // Whether the card dataset has been loaded
     private static boolean initialized = false;
@@ -40,6 +44,11 @@ public abstract class Card {
             setLogo,
             setSymbol;
 
+    /**
+     * Constructs a Card object from a JSON structure.
+     * @param js the JSON object containing card data
+     * @throws Json.ParsingException if JSON parsing fails
+     */
     public Card(Json js) throws Json.ParsingException {
         this.globalId = js.get("id").value();
         this.localId = js.get("localId").value();
@@ -69,6 +78,10 @@ public abstract class Card {
         }
     }
 
+    /**
+     * Initializes the card database by loading card data from JSON.
+     * @param context the application context
+     */
     public static void initialize(Context context) {
         if (!Card.initialized) {
             try {
@@ -120,7 +133,11 @@ public abstract class Card {
         }
     }
 
-    // Strips punctuation and capitalization for easier searching
+    /**
+     * Cleans a card name by removing punctuation and converting to lower case.
+     * @param in the original card name
+     * @return the cleaned card name
+     */
     public static String cleanName(String in) {
         return in.strip()
                 .toLowerCase()
@@ -129,7 +146,11 @@ public abstract class Card {
                 .replaceAll("\\.", "");
     }
 
-    // Get card hashmap, throw exception if not initialized
+    /**
+     * Retrieves a card by its ID.
+     * @param id the global ID of the card
+     * @return the Card object
+     */
     public static Card getCardById(String id) {
         if (!Card.initialized) {
             throw new RuntimeException("Cards not initialized. Do `Card.initialize()` first.");
@@ -137,6 +158,11 @@ public abstract class Card {
         return cardsById.get(id);
     }
 
+    /**
+     * Retrieves the logo associated with a set ID.
+     * @param id the set ID
+     * @return the Drawable logo
+     */
     public static Drawable getLogoById(String id) {
         if (!Card.initialized) {
             throw new RuntimeException("Cards not initialized. Do `Card.initialize()` first.");
@@ -149,7 +175,10 @@ public abstract class Card {
         }
     }
 
-    // Get card sorted list, throw exception if not initialized
+    /**
+     * Retrieves a list of cards sorted by name.
+     * @return the list of cards
+     */
     public static ArrayList<String[]> getCardsByName() {
         if (!Card.initialized) {
             throw new RuntimeException("Cards not initialized. Do `Card.initialize()` first.");
@@ -157,7 +186,10 @@ public abstract class Card {
         return cardsByName;
     }
 
-    // Get card sorted list, throw exception if not initialized
+    /**
+     * Retrieves a list of cards sorted by artist.
+     * @return the list of cards
+     */
     public static ArrayList<String[]> getCardsByArtist() {
         if (!Card.initialized) {
             throw new RuntimeException("Cards not initialized. Do `Card.initialize()` first.");
@@ -165,7 +197,10 @@ public abstract class Card {
         return cardsByArtist;
     }
 
-    // Get card sorted list, throw exception if not initialized
+    /**
+     * Retrieves a list of cards sorted by set.
+     * @return the list of cards
+     */
     public static ArrayList<String[]> getCardsBySet() {
         if (!Card.initialized) {
             throw new RuntimeException("Cards not initialized. Do `Card.initialize()` first.");
@@ -178,9 +213,18 @@ public abstract class Card {
         return this.setId + " " + this.setName + " " + this.setLogo;
     }
 
+    /**
+     * Represents a specific type of card: Energy.
+     * These cards provide energy necessary for Pokemon to perform actions.
+     */
     public static class Energy extends Card {
         private final String effect, type;
 
+        /**
+         * Constructs an Energy card with specific attributes related to energy effects.
+         * @param js the JSON object containing energy card data
+         * @throws Json.ParsingException if JSON parsing fails
+         */
         public Energy(Json js) throws Json.ParsingException {
             super(js);
             this.effect = js.get("effect").value();
@@ -193,6 +237,9 @@ public abstract class Card {
         }
     }
 
+    /**
+     * Represents a Pokemon card, detailing a creature with various attributes.
+     */
     public static class Pokemon extends Card {
         private final String evolveFrom,
                 description,
@@ -205,6 +252,11 @@ public abstract class Card {
         ArrayList<String> types;
         ArrayList<Attack> attacks;
 
+        /**
+         * Constructs a Pokemon card with attributes related to the creature and its abilities.
+         * @param js the JSON object containing Pokemon card data
+         * @throws Json.ParsingException if JSON parsing fails
+         */
         public Pokemon(Json js) throws Json.ParsingException {
             super(js);
             this.evolveFrom = js.get("evolveFrom").valueOrDefault("None");
@@ -233,10 +285,18 @@ public abstract class Card {
         public String toString() {
             return this.hp + " " + this.types;
         }
+
+        /**
+         * Inner class representing an attack associated with a Pokemon card.
+         */
         public static class Attack {
             private final ArrayList<String> cost;
             private final String name, effect, damage;
 
+            /**
+             * Constructs an Attack with specific attributes like cost and effect.
+             * @param js the JSON object containing attack data
+             */
             public Attack(Json js) {
                 this.cost = new ArrayList<String>();
                 for (Json costJson: js.get("cost").getAll()) {
@@ -250,9 +310,17 @@ public abstract class Card {
         }
     }
 
+    /**
+     * Represents a Trainer card, providing special effects or actions within the game.
+     */
     public static class Trainer extends Card {
         private final String effect, type;
 
+        /**
+         * Constructs a Trainer card with attributes specific to game mechanics.
+         * @param js the JSON object containing trainer card data
+         * @throws Json.ParsingException if JSON parsing fails
+         */
         protected Trainer(Json js) throws Json.ParsingException {
             super(js);
             this.effect = js.get("effect").value();
