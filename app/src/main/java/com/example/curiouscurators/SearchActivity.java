@@ -26,6 +26,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+/**
+ * Activity to search and display a list of cards based on different filters.
+ */
 public class SearchActivity extends AppCompatActivity {
     private RecyclerView cardRecycler;
     private SearchRecyclerViewAdapter cardAdapter;
@@ -33,17 +36,24 @@ public class SearchActivity extends AppCompatActivity {
     private Spinner searchType;
     private ArrayAdapter<CharSequence> searchAdapter;
 
+    /**
+     * Initializes the activity, setting up the user interface components and event handlers.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
+     *                           this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle).
+     *                           Otherwise it is null.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_search);
+        EdgeToEdge.enable(this); // Apply edge-to-edge screen layout
+        setContentView(R.layout.activity_search); // Set the XML layout for this activity
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        Card.initialize(this);
+        Card.initialize(this); // Initialize the card data from a JSON file or database
         this.cardRecycler = findViewById(R.id.searchRecyclerView);
         this.searchType = findViewById(R.id.searchType);
         this.searchAdapter = ArrayAdapter.createFromResource(
@@ -66,7 +76,7 @@ public class SearchActivity extends AppCompatActivity {
                         SearchActivity.this.searchSubset.setFilterType(CardSubset.FilterType.Set);
                         break;
                 }
-                SearchActivity.this.cardAdapter.notifyDataSetChanged();
+                SearchActivity.this.cardAdapter.notifyDataSetChanged(); // Refreshes the screen after changing the filter
             }
 
             @Override
@@ -74,11 +84,15 @@ public class SearchActivity extends AppCompatActivity {
                 SearchActivity.this.searchSubset.setFilterType(CardSubset.FilterType.Name);
             }
         });
+
+        // Initialize search subset and adapter for the RecyclerView
         this.searchType.setAdapter(this.searchAdapter);
         this.searchSubset = new CardSubset();
         this.cardAdapter = new SearchRecyclerViewAdapter(this, this.searchSubset);
         this.cardRecycler.setAdapter(this.cardAdapter);
         this.cardRecycler.setLayoutManager(new LinearLayoutManager(this));
+
+        // Set up the SearchView to react to text input for searching
         SearchView search = findViewById(R.id.searchBar);
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @SuppressLint("NotifyDataSetChanged")
@@ -100,12 +114,22 @@ public class SearchActivity extends AppCompatActivity {
     }
 }
 
+/**
+ * Adapter for the RecyclerView used in SearchActivity.
+ * Binds data from the CardSubset to views in the RecyclerView.
+ */
 class SearchRecyclerViewAdapter
         extends RecyclerView.Adapter
         <SearchRecyclerViewAdapter.MyViewHolder> {
     Context context;
     CardSubset cards;
 
+    /**
+     * Constructor for the SearchRecyclerViewAdapter.
+     *
+     * @param context the current context.
+     * @param subset the subset of cards to be displayed.
+     */
     public SearchRecyclerViewAdapter(Context context, CardSubset subset) {
         this.context = context;
         this.cards = subset;
@@ -141,6 +165,9 @@ class SearchRecyclerViewAdapter
         return this.cards.getContained().size();
     }
 
+    /**
+     * Provides a reference to the type of views used in the RecyclerView.
+     */
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         TextView name, artist;
         ImageView setLogo;
