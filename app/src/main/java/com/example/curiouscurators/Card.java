@@ -22,15 +22,15 @@ public abstract class Card {
     // Whether the card dataset has been loaded
     private static boolean initialized = false;
     // Card objects indexed by global ID
-    private static HashMap<String, Card> cardsById = new HashMap<String, Card>();
+    private static final HashMap<String, Card> cardsById = new HashMap<>();
     // Sorted table of {name, globalId}
-    private static ArrayList<String[]> cardsByName = new ArrayList<String[]>();
+    private static final ArrayList<String[]> cardsByName = new ArrayList<>();
     // Sorted table of {illustrator, globalId}
-    private static ArrayList<String[]> cardsByArtist = new ArrayList<String[]>();
+    private static final ArrayList<String[]> cardsByArtist = new ArrayList<>();
     // Sorted table of {illustrator, globalId}
-    private static ArrayList<String[]> cardsBySet= new ArrayList<String[]>();
+    private static final ArrayList<String[]> cardsBySet= new ArrayList<>();
 
-    private static HashMap<String, Drawable> setLogos = new HashMap<String, Drawable>();
+    private static final HashMap<String, Drawable> setLogos = new HashMap<>();
 
     public final String globalId,
             localId,
@@ -127,6 +127,8 @@ public abstract class Card {
                     Card.setLogos.put(name, logo);
                 }
                 Card.initialized = true;
+                setNames.recycle();
+                setLogos.recycle();
             } catch (IOException | Json.ParsingException e) {
                 throw new RuntimeException(e);
             }
