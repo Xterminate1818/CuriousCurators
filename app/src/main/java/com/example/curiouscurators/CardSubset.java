@@ -1,5 +1,7 @@
 package com.example.curiouscurators;
 
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +28,7 @@ public class CardSubset {
      * Retrieves the appropriate card set based on the current filter type.
      * @return ArrayList of String arrays representing the filtered set of cards.
      */
+    @NonNull
     private ArrayList<String[]> getSearchSet() {
         switch (this.filterType) {
             case Name:
@@ -35,7 +38,7 @@ public class CardSubset {
             case Set:
                 return Card.getCardsBySet();
         }
-        return null; // Unreachable but needed for compilation
+        throw new RuntimeException("Unreachable"); // Unreachable but needed for compilation
     }
 
     /**

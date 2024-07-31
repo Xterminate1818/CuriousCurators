@@ -118,20 +118,20 @@ public abstract class Card {
                         return s1[0].compareTo(s2[0]);
                     }
                 });
-                TypedArray setNames = context.getResources().obtainTypedArray(R.array.setNames);
-                TypedArray setLogos = context.getResources().obtainTypedArray(R.array.setLogos);
-                for (int i = 0; i < setNames.length(); i++) {
-                    String name = setNames.getString(i);
-                    int logoId = setLogos.getResourceId(i, -1);
-                    Drawable logo = ContextCompat.getDrawable(context, logoId);
-                    Card.setLogos.put(name, logo);
-                }
-                Card.initialized = true;
-                setNames.recycle();
-                setLogos.recycle();
             } catch (IOException | Json.ParsingException e) {
                 throw new RuntimeException(e);
             }
+            TypedArray setNames = context.getResources().obtainTypedArray(R.array.setNames);
+            TypedArray setLogos = context.getResources().obtainTypedArray(R.array.setLogos);
+            for (int i = 0; i < setNames.length(); i++) {
+                String name = setNames.getString(i);
+                int logoId = setLogos.getResourceId(i, -1);
+                Drawable logo = ContextCompat.getDrawable(context, logoId);
+                Card.setLogos.put(name, logo);
+            }
+            Card.initialized = true;
+            setNames.recycle();
+            setLogos.recycle();
         }
     }
 
