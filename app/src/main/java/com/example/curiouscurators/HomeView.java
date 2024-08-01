@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,10 +24,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.ArrayList;
 import java.util.Random;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import java.util.ArrayList;
-import java.util.Random;
 
 /**
  * HomeView is an activity that serves as the main screen of the card app.
@@ -38,7 +35,11 @@ public class HomeView extends AppCompatActivity {
     private RecyclerView collectionRecycler;
     private HomeRecyclerViewAdapter collectionAdapter;
     private ArrayList<Card> ownedCards;
+    private ArrayList<Card> allCards;
     private Button randomCardButton;
+    private TextView totalCardsCollectedTextView;
+    private TextView totalCardsLoadedTextView;
+
     /**
      * Called when the activity is first created.
      * This method sets up the layout, initializes the bottom navigation view, handles item selections,
@@ -81,6 +82,7 @@ public class HomeView extends AppCompatActivity {
         Card.initialize(this);
 
         this.ownedCards = Card.getOwnedCards();
+        this.allCards = Card.getAllCards();
 
         this.collectionRecycler = findViewById(R.id.collectionRecyclerView);
         this.collectionAdapter = new HomeRecyclerViewAdapter(this, this.ownedCards);
@@ -105,6 +107,26 @@ public class HomeView extends AppCompatActivity {
                 }
             }
         });
+        this.totalCardsCollectedTextView = findViewById(R.id.totalCardsCollected);
+        updateTotalCardsCollected();
+
+        this.totalCardsLoadedTextView = findViewById(R.id.totalCardsLoaded);
+        updateTotalCardsLoaded();
+    }
+
+    /**
+     * Updates the totalCardsCollected TextView with the number of collected cards.
+     */
+    private void updateTotalCardsCollected() {
+        int totalCardsCollected = this.ownedCards.size();
+        String text = "\t\t\t\t\t Cards\n\t\t\t\tCollected\n\t\t\t\t\t  #" + totalCardsCollected;
+        this.totalCardsCollectedTextView.setText(text);
+    }
+
+    private void updateTotalCardsLoaded() {
+        int totalCardsLoaded = this.allCards.size();
+        String text = "\t\t\t\t Cards In\n\t\t\t\tDatabase\n\t\t\t\t #" + totalCardsLoaded;
+        this.totalCardsLoadedTextView.setText(text);
     }
 }
 
