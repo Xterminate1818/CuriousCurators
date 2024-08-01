@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">CuriousCurators</string>
+    <string name="app_name">PokeDex</string>
     <string name="setNamePrefix">Set: %1$s</string>
     <string name="artistNamePrefix">Artist: %1$s</string>
     <string-array name="searchDropdown">
