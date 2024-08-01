@@ -327,6 +327,13 @@ public abstract class Card {
         return cardsBySet;
     }
 
+    public static ArrayList<Card> getAllCards() {
+        if (!Card.initialized) {
+            throw new RuntimeException("Cards not initialized.");
+        }
+        return new ArrayList<>(cardsById.values());
+    }
+
     @NonNull
     public String toString() {
         return this.setId + " " + this.setName + " " + this.setLogo;

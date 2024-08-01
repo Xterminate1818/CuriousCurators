@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,8 +20,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import java.util.ArrayList;
+import java.util.Random;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * HomeView is an activity that serves as the main screen of the card app.
@@ -32,6 +38,7 @@ public class HomeView extends AppCompatActivity {
     private RecyclerView collectionRecycler;
     private HomeRecyclerViewAdapter collectionAdapter;
     private ArrayList<Card> ownedCards;
+    private Button randomCardButton;
     /**
      * Called when the activity is first created.
      * This method sets up the layout, initializes the bottom navigation view, handles item selections,
@@ -79,6 +86,25 @@ public class HomeView extends AppCompatActivity {
         this.collectionAdapter = new HomeRecyclerViewAdapter(this, this.ownedCards);
         this.collectionRecycler.setAdapter(this.collectionAdapter);
         this.collectionRecycler.setLayoutManager(new LinearLayoutManager(this));
+
+        this.randomCardButton = findViewById(R.id.randomCard);
+        this.randomCardButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Get the complete list of cards
+                ArrayList<Card> allCards = new ArrayList<>(Card.getAllCards());
+                if (!allCards.isEmpty()) {
+                    // Randomly select a card from the entire dataset
+                    Random random = new Random();
+                    Card randomCard = allCards.get(random.nextInt(allCards.size()));
+
+                    // Start the SingleCardActivity with the selected card's global ID
+                    Intent intent = new Intent(HomeView.this, SingleCardActivity.class);
+                    intent.putExtra("id", randomCard.globalId);
+                    startActivity(intent);
+                }
+            }
+        });
     }
 }
 
