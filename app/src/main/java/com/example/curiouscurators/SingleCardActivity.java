@@ -20,6 +20,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -32,6 +34,10 @@ public class SingleCardActivity extends AppCompatActivity {
     Button returnButton, addButton;
     ExecutorService downloadThread;
     Card card;
+
+    private static final List<Card> recentlyViewedCards = new ArrayList<>();
+    private static final int MAX_RECENTLY_VIEWED = 10;
+
 
     /**
      * Initializes the activity, setting up the user interface and loading the card details.
@@ -148,6 +154,10 @@ public class SingleCardActivity extends AppCompatActivity {
                 }
             }
         });
+
+        // Add current card to Recently Viewed Cards
+        addToRecentlyViewed(card);
+
     }
 
     private void setAddButtonText() {
@@ -157,6 +167,25 @@ public class SingleCardActivity extends AppCompatActivity {
         } else {
             this.addButton.setText("Add to Collection");
         }
+    }
+    private void addToRecentlyViewed(Card card) {
+        // Check if the card is already in the list
+        for (Card c : recentlyViewedCards) {
+            if (c.globalId.equals(card.globalId)) {
+                // Card is already in the list, so return early
+                return;
+            }
+        }
+
+        // If the card is not in the list, add it
+        if (recentlyViewedCards.size() >= MAX_RECENTLY_VIEWED) {
+            recentlyViewedCards.remove(0); // Remove the oldest card if the list exceeds the max size
+        }
+        recentlyViewedCards.add(card);
+    }
+
+    public static List<Card> getRecentlyViewedCards() {
+        return recentlyViewedCards;
     }
 }
 

@@ -7,7 +7,6 @@
     android:layout_height="match_parent"
     android:background="#EAE8FF">
 
-
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -150,6 +149,7 @@
                 app:srcCompat="@android:drawable/ic_menu_crop" />
 
         </LinearLayout>
+
     </ScrollView>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

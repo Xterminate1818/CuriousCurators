@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
 
@@ -32,8 +33,8 @@ import java.util.Random;
  * and adjusts padding for window insets to ensure content is not obscured by system bars.
  */
 public class HomeView extends AppCompatActivity {
-    private RecyclerView collectionRecycler;
-    private HomeRecyclerViewAdapter collectionAdapter;
+    private RecyclerView recentlyRecyclerView;
+    private HomeRecyclerViewAdapter recentlyAdapter;
     private ArrayList<Card> ownedCards;
     private ArrayList<Card> allCards;
     private Button randomCardButton;
@@ -84,10 +85,16 @@ public class HomeView extends AppCompatActivity {
         this.ownedCards = Card.getOwnedCards();
         this.allCards = Card.getAllCards();
 
-        this.collectionRecycler = findViewById(R.id.collectionRecyclerView);
-        this.collectionAdapter = new HomeRecyclerViewAdapter(this, this.ownedCards);
-        this.collectionRecycler.setAdapter(this.collectionAdapter);
-        this.collectionRecycler.setLayoutManager(new LinearLayoutManager(this));
+        // Update the RecyclerView for Recently Viewed Cards
+        this.recentlyRecyclerView = findViewById(R.id.recentlyRecyclerView);
+
+        // Retrieve and sort recently viewed cards
+        ArrayList<Card> recentlyViewedCards = new ArrayList<>(SingleCardActivity.getRecentlyViewedCards());
+        Collections.reverse(recentlyViewedCards); // Sort in reverse order
+
+        this.recentlyAdapter = new HomeRecyclerViewAdapter(this, recentlyViewedCards);
+        this.recentlyRecyclerView.setAdapter(this.recentlyAdapter);
+        this.recentlyRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         this.randomCardButton = findViewById(R.id.randomCard);
         this.randomCardButton.setOnClickListener(new View.OnClickListener() {
@@ -131,10 +138,9 @@ public class HomeView extends AppCompatActivity {
 }
 
 /**
- * Adapter for displaying a list of owned cards in a RecyclerView within CollectionView.
+ * Adapter for displaying a list of recently viewed cards in a RecyclerView within HomeView.
  */
-class HomeRecyclerViewAdapter
-        extends RecyclerView.Adapter<HomeRecyclerViewAdapter.MyViewHolder> {
+class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerViewAdapter.MyViewHolder> {
     Context context;
     ArrayList<Card> cards;
 
