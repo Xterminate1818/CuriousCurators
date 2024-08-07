@@ -54,38 +54,44 @@ public class SingleCardActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_single_card);
 
+        // Set up the bottom navigation vie
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setSelectedItemId(R.id.bottom_search);
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
-            if (itemId == R.id.bottom_home) {
+            if (itemId == R.id.bottom_home) { // Navigate to the home activity
                 startActivity(new Intent(getApplicationContext(), HomeView.class));
-                finish();
+                finish(); // Closes activity
                 return true;
-            } else if (itemId == R.id.bottom_search) {
+            } else if (itemId == R.id.bottom_search) { // Navigate to the search activity
                 startActivity(new Intent(getApplicationContext(), SearchActivity.class));
-                finish();
+                finish(); // Closes activity
                 return true;
-            } else if (itemId == R.id.bottom_collection) {
+            } else if (itemId == R.id.bottom_collection) { // Navigate to the collection activity
                 startActivity(new Intent(getApplicationContext(), CollectionView.class));
-                finish();
+                finish(); // Closes activity
                 return true;
             }
             return false;
         });
 
+        // Adjust padding to account for system bars
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        Card.initialize(this);
-        String id = getIntent().getStringExtra("id");
+        Card.initialize(this); // Initialize card data
+        String id = getIntent().getStringExtra("id"); // Get the card ID from the intent extras
         if (id == null) {
-            id = "xy8-79";
+            id = "xy8-79"; // Default ID if none is provided
         }
+
+        // Retrieve the card data based on the ID
         this.card = Card.getCardById(id);
+
+        // Initialize UI elements
         this.cardImage = findViewById(R.id.cardImage);
         this.typeImage = findViewById(R.id.type);
         this.setImage = findViewById(R.id.setImage);
@@ -98,6 +104,7 @@ public class SingleCardActivity extends AppCompatActivity {
         this.returnButton = findViewById(R.id.returnButton);
         this.addButton = findViewById(R.id.addButton);
 
+        // Set the images and text views with card details
         this.setImage.setImageDrawable(Card.getLogoById(card.setId));
         this.cardName.setText(card.name);
         this.artistName.setText(card.illustrator);
@@ -106,6 +113,7 @@ public class SingleCardActivity extends AppCompatActivity {
         this.localId.setText(card.localId);
         this.category.setText(card.category);
 
+        // Set the type image based on card category
         if (card.category.equals("Pokemon")) {
             Card.Pokemon pkm = (Card.Pokemon) card;
             String type = pkm.types.get(0);
@@ -117,16 +125,17 @@ public class SingleCardActivity extends AppCompatActivity {
             typeImage.setImageDrawable(Card.getEnergySymbol(type));
         }
 
-        this.setAddButtonText();
-        this.addButton.setOnClickListener(new View.OnClickListener() {
+        this.setAddButtonText(); // Update the add button text based on card ownership
+        this.addButton.setOnClickListener(new View.OnClickListener() { // Set up the click listener for the add button
             @Override
             public void onClick(View view) {
                 boolean owned = Card.isCardOwned(card.globalId);
                 Card.setCardOwned(SingleCardActivity.this, card.globalId, !owned);
-                setAddButtonText();
+                setAddButtonText(); // Update the button text after adding/removing the card
             }
         });
 
+        // Set up the click listener for the return button
         this.returnButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -160,6 +169,9 @@ public class SingleCardActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Updates the text of the add button based on whether the card is owned.
+     */
     private void setAddButtonText() {
         boolean owned = Card.isCardOwned(this.card.globalId);
         if (owned) {
@@ -168,6 +180,12 @@ public class SingleCardActivity extends AppCompatActivity {
             this.addButton.setText("Add to Collection");
         }
     }
+
+    /**
+     * Adds a card to the list of recently viewed cards.
+     * If the list exceeds the maximum size, the oldest card is removed.
+     * @param card The card to be added to the recently viewed list.
+     */
     private void addToRecentlyViewed(Card card) {
         // Check if the card is already in the list
         for (Card c : recentlyViewedCards) {
@@ -184,6 +202,10 @@ public class SingleCardActivity extends AppCompatActivity {
         recentlyViewedCards.add(card);
     }
 
+    /**
+     * Retrieves the list of recently viewed cards.
+     * @return A list of recently viewed cards.
+     */
     public static List<Card> getRecentlyViewedCards() {
         return recentlyViewedCards;
     }

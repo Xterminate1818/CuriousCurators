@@ -10,7 +10,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,7 +23,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
-
 
 /**
  * HomeView is an activity that serves as the main screen of the card app.
@@ -138,12 +136,18 @@ public class HomeView extends AppCompatActivity {
 }
 
 /**
- * Adapter for displaying a list of recently viewed cards in a RecyclerView within HomeView.
+ * Adapter class for displaying a list of cards in a RecyclerView on the Home screen.
+ * Handles creating and binding view holders for each item in the list.
  */
 class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerViewAdapter.MyViewHolder> {
-    Context context;
-    ArrayList<Card> cards;
+    Context context; // Context to access application resources and start activities
+    ArrayList<Card> cards; // List of cards to be displayed in the RecyclerView
 
+    /**
+     * Constructor for the HomeRecyclerViewAdapter.
+     * @param context The context of the activity or application.
+     * @param cards   The list of cards to be displayed in the RecyclerView.
+     */
     public HomeRecyclerViewAdapter(Context context, ArrayList<Card> cards) {
         this.context = context;
         this.cards = cards;
@@ -152,6 +156,7 @@ class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerViewAdapt
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        // Inflate the layout for individual items in the RecyclerView
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.search_row, parent, false);
         return new MyViewHolder(view);
@@ -159,12 +164,18 @@ class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerViewAdapt
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+        // Get the current card based on position
         Card current = this.cards.get(position);
+
+        // Set the card details to the views in the ViewHolder
         holder.name.setText(current.name);
         holder.setLogo.setImageDrawable(Card.getLogoById(current.setId));
         holder.artist.setText(current.illustrator);
         holder.set.setText(current.setName);
+
+        // Set an OnClickListener to handle item clicks
         holder.itemView.setOnClickListener(view -> {
+            // Start SingleCardActivity and pass the card's globalId as an extra
             Intent i = new Intent(context, SingleCardActivity.class);
             i.putExtra("id", current.globalId);
             context.startActivity(i);
@@ -173,6 +184,7 @@ class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerViewAdapt
 
     @Override
     public int getItemCount() {
+        // Return the total number of cards in the list
         return this.cards.size();
     }
 
@@ -181,11 +193,18 @@ class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerViewAdapt
      * Holds references to the views in each item of the RecyclerView.
      */
     public static class MyViewHolder extends RecyclerView.ViewHolder {
+        // UI elements to display card details
         TextView name, artist, set;
         ImageView setLogo;
 
+        /**
+         * Constructor for the ViewHolder. Initializes the UI elements for the item view.
+         *
+         * @param itemView The view of the item within the RecyclerView.
+         */
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
+            // Find and initialize the TextViews and ImageView from the item view layout
             name = itemView.findViewById(R.id.cardName);
             setLogo = itemView.findViewById(R.id.setLogo);
             artist = itemView.findViewById(R.id.artistName);

@@ -59,36 +59,42 @@ public class SearchActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_search);
 
+        // Set up the bottom navigation view
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setSelectedItemId(R.id.bottom_search);
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
-            if (itemId == R.id.bottom_home) {
+            if (itemId == R.id.bottom_home) { // Navigate to the home activity
                 startActivity(new Intent(getApplicationContext(), HomeView.class));
-                finish();
+                finish(); // Closes activity
                 return true;
-            } else if (itemId == R.id.bottom_search) {
+            } else if (itemId == R.id.bottom_search) { // current search activity
                 return true;
-            } else if (itemId == R.id.bottom_collection) {
+            } else if (itemId == R.id.bottom_collection) { // Navigate to the collection activity
                 startActivity(new Intent(getApplicationContext(), CollectionView.class));
-                finish();
+                finish(); // Closes activity
                 return true;
             }
             return false;
         });
 
+        // Adjust padding to account for system bars
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        // Initialize card data
         Card.initialize(this);
+        // Set up the RecyclerView for displaying cards
         this.cardRecycler = findViewById(R.id.searchRecyclerView);
         this.searchType = findViewById(R.id.searchType);
         this.searchAdapter = ArrayAdapter.createFromResource(
                 this, R.array.searchDropdown,
                 R.layout.spinner_item);
+        // Set up the search type dropdown
         this.searchAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         this.searchType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @SuppressLint("NotifyDataSetChanged")
@@ -109,12 +115,13 @@ public class SearchActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
+            public void onNothingSelected(AdapterView<?> adapterView) { // Default to filtering by name if no selection
                 SearchActivity.this.searchSubset.setFilterType(CardSubset.FilterType.Name);
             }
         });
         this.searchType.setAdapter(this.searchAdapter);
 
+        // Set up the sort type dropdown
         this.sortType = findViewById(R.id.sortType);
         this.sortAdapter = ArrayAdapter.createFromResource(
                 this, R.array.sortDropdown,
@@ -122,25 +129,28 @@ public class SearchActivity extends AppCompatActivity {
         this.sortAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         this.sortType.setAdapter(this.sortAdapter);
 
+        // Initialize the card subset for filtering and sorting
         this.searchSubset = new CardSubset();
         this.cardAdapter = new SearchRecyclerViewAdapter(this, this.searchSubset);
         this.cardRecycler.setAdapter(this.cardAdapter);
         this.cardRecycler.setLayoutManager(new LinearLayoutManager(this));
+
+        // Set up the search bar
         SearchView search = findViewById(R.id.searchBar);
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
             public boolean onQueryTextSubmit(String s) {
-                SearchActivity.this.searchSubset.setFilter(s);
-                SearchActivity.this.cardAdapter.notifyDataSetChanged();
+                SearchActivity.this.searchSubset.setFilter(s); // Apply filter based on search query
+                SearchActivity.this.cardAdapter.notifyDataSetChanged(); // Notify adapter of changes
                 return true;
             }
 
             @SuppressLint("NotifyDataSetChanged")
             @Override
             public boolean onQueryTextChange(String s) {
-                SearchActivity.this.searchSubset.setFilter(s);
-                SearchActivity.this.cardAdapter.notifyDataSetChanged();
+                SearchActivity.this.searchSubset.setFilter(s); // Apply filter based on search query
+                SearchActivity.this.cardAdapter.notifyDataSetChanged(); // Notify adapter of changes
                 return true;
             }
         });
@@ -170,25 +180,48 @@ class SearchRecyclerViewAdapter
         this.cards = subset;
     }
 
+    /**
+     * Creates a new ViewHolder instance for the RecyclerView.
+     * Inflates the layout for each item and returns a ViewHolder.
+     *
+     * @param parent The parent ViewGroup into which the new View will be added.
+     * @param viewType The view type of the new View.
+     * @return A new MyViewHolder object.
+     */
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        // Inflate the layout for each item
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.search_row, parent, false);
         return new MyViewHolder(view);
     }
 
+    /**
+     * Binds data to the ViewHolder for a specific position in the RecyclerView.
+     * Updates the UI elements of the ViewHolder with data from the card.
+     *
+     * @param holder The ViewHolder that holds the item view.
+     * @param position The position of the item within the adapter's data set.
+     */
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+        // Get the card ID from the dataset
         String id = this.cards.getContained().get(position)[1];
+        // Fetch the card details using the ID
         Card current = Card.getCardById(id);
+
+        // Set the UI elements with the card data
         holder.name.setText(current.name);
         holder.setLogo.setImageDrawable(Card.getLogoById(current.setId));
         holder.artist.setText(current.illustrator);
         holder.set.setText(current.setName);
+
+        // Set an OnClickListener to handle item clicks
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // Start SingleCardActivity with the card ID as an extra
                 Intent i = new Intent(context, SingleCardActivity.class);
                 i.putExtra("id", current.globalId);
                 context.startActivity(i);
@@ -196,6 +229,10 @@ class SearchRecyclerViewAdapter
         });
     }
 
+    /**
+     * Returns the total number of items in the adapter's data set.
+     * @return The number of items in the data set.
+     */
     @Override
     public int getItemCount() {
         return this.cards.getContained().size();
@@ -206,6 +243,7 @@ class SearchRecyclerViewAdapter
      * Holds references to the views in each item of the RecyclerView.
      */
     public static class MyViewHolder extends RecyclerView.ViewHolder {
+        // UI elements to display card details
         TextView name, artist, set;
         ImageView setLogo;
 
@@ -216,6 +254,7 @@ class SearchRecyclerViewAdapter
          */
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
+            // Find and initialize the TextViews and ImageView from the item view layout
             name = itemView.findViewById(R.id.cardName);
             setLogo = itemView.findViewById(R.id.setLogo);
             artist = itemView.findViewById(R.id.artistName);

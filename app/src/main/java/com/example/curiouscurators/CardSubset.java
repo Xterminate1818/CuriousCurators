@@ -5,15 +5,31 @@ import androidx.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a subset of cards with filtering and sorting options.
+ * This class allows for filtering and sorting of card collections based on different criteria.
+ * It includes enums to specify filter and sort types, and a list to hold the filtered card data.
+ */
 public class CardSubset {
+    // Filters cards by Name, Artist, and Set
     public enum FilterType {
         Name, Artist, Set
     }
+
+    /**
+     * Enum representing the different types of sorting that can be applied to the card subset.
+     */
     public enum SortType {
         Name, Artist, Set
     }
+
+    // The filter string used to match against card attributes
     String filter;
+
+    // The type of filter applied to the card subset
     FilterType filterType;
+
+    // List of card data that matches the filter criteria
     ArrayList<String[]> contained;
 
     /**
@@ -33,12 +49,13 @@ public class CardSubset {
      */
     @NonNull
     private ArrayList<String[]> getSearchSet() {
+        // Determine which set of cards to return based on the filter type
         switch (this.filterType) {
-            case Name:
+            case Name: // Return cards sorted by name
                 return Card.getCardsByName();
-            case Artist:
+            case Artist: // Return cards sorted by artist
                 return Card.getCardsByArtist();
-            case Set:
+            case Set: // Return cards sorted by set
                 return Card.getCardsBySet();
         }
         throw new RuntimeException("Unreachable"); // Unreachable but needed for compilation
@@ -60,7 +77,14 @@ public class CardSubset {
     }
 
     /**
-     * Applies the current filter without clearing the contained subset.
+     * Applies a filter to a list of string arrays and updates the `contained` list with the filtered results.
+     *
+     * This method performs a binary search on a sorted `searchSet` to find the range of entries that begin with the given filter.
+     * It first finds the start of the range where the filter matches, then finds the end of the range, and updates the `contained`
+     * list with the entries within that range. If no matching entries are found, the `contained` list is cleared.
+     *
+     * @param searchSet ArrayList of string arrays where each string array contains elements to be filtered.
+     * The list is expected to be sorted based on the first element of each string array.
      */
     private void applyFilter(ArrayList<String[]> searchSet) {
         int wordLength = this.filter.length();
@@ -84,13 +108,16 @@ public class CardSubset {
             this.contained.clear();
             return;
         }
+
         // Find end
         low = 0;
         high = searchSet.size() - 1;
+        // Perform binary search to find the end of the range
         while (low <= high) {
             int middle = (low + high) / 2;
             String atMiddle = searchSet.get(middle)[0];
             String substring = atMiddle.substring(0, Integer.min(wordLength, atMiddle.length()));
+            // Compare the substring with the filter value
             if (substring.compareTo(this.filter) > 0) {
                 high = middle - 1;
             } else if (substring.compareTo(this.filter) < 0) {
@@ -101,11 +128,13 @@ public class CardSubset {
             }
         }
 
+        // If no end range is found, clear the contained list and exit
         if (rangeEnd == -1) {
             this.contained.clear();
             return;
         }
 
+        // Create a sublist from the start to the end of the found range
         List<String[]> reducedList = searchSet.subList(rangeStart, rangeEnd);
         this.contained = new ArrayList<>(reducedList);
     }
@@ -139,8 +168,8 @@ public class CardSubset {
      * @param filterType the type of filter to apply (Name, Artist, or Set)
      */
     public void setFilterType(FilterType filterType) {
-        this.filterType = filterType;
-        this.contained.clear();
-        this.applyFilter(this.getSearchSet());
+        this.filterType = filterType; // Update the filter type
+        this.contained.clear(); // Clears the previously filtered list of cards
+        this.applyFilter(this.getSearchSet()); // Applies the filter with the updated filter type
     }
 }

@@ -73,6 +73,16 @@ public abstract class Card {
         this.setSymbol = js.get("set").get("symbol").value();
     }
 
+    /**
+     * Creates a {@code Card} object from a JSON string representation.
+     * This static method parses the provided JSON string to determine the type of card (e.g., Pokemon, Energy, Trainer)
+     * based on the "category" field. It then constructs and returns an instance of the appropriate subclass of {@code Card}.
+     * If the category does not match any known card types, a {@code Json.ParsingException} is thrown.
+     *
+     * @param in The JSON string representing the card data.
+     * @return A {@code Card} object corresponding to the specified JSON string.
+     * @throws Json.ParsingException If the JSON string cannot be parsed or the category is unknown.
+     */
     static public Card fromString(String in) throws Json.ParsingException {
         Json js = Json.fromString(in);
         String category = js.get("category").value();
@@ -205,6 +215,15 @@ public abstract class Card {
         }
     }
 
+    /**
+     * Reads the list of owned cards from a CSV file and updates the `cardsOwned` collection.
+     * This method reads a CSV file named "owned.csv" from the application's internal storage.
+     * It processes the file line by line, extracts card IDs, and updates the `cardsOwned` collection
+     * by adding only those IDs that exist in the `cardsById` map. Any errors encountered during file
+     * reading are caught and logged.
+     *
+     * @param context The context from which to access the application's internal file storage.
+     */
     public static void readOwnedCards(Context context) {
         try {
             InputStream inputStream = context.openFileInput("owned.csv");
@@ -449,7 +468,9 @@ public abstract class Card {
          */
         protected Trainer(Json js) throws Json.ParsingException {
             super(js);
+            // Extract and set the "effect" property from the JSON object
             this.effect = js.get("effect").value();
+            // Extract and set the "trainerType" property from the JSON object
             this.type = js.get("trainerType").value();
         }
 
