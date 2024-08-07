@@ -39,3 +39,8 @@ To use the Pokémon Cards Collection Tracker application:
 
 ## Data
 The data we utilized for the project was collected from the https://tcgdex.dev/ API. It is a collection of every Pokémon card printed to date, over 17,000 in total. Each line of the ‘cards.json’ file represents a distinct card represented as a JSON blob. Each card has a set of shared fields, and a set of category specific fields for the Pokémon, Trainer, and Energy card categories. Because of inconsistency in card printings over time, many fields may be empty for certain cards. These fields have been considered on a case-by-case basis, and assigned unique “null” filler values. For example, when the illustrator field is missing it is instead given the value “Unknown,” while a missing description is assigned an empty string.
+
+## Known Issues
+- Card Value Feature Removal: Our initial prototype included a 'Cards Value' feature. However, we had to remove this feature due to the lack of card value data in our dataset.
+- Data Volume and Complexity: Managing a dataset of over 17,000 cards across 50 different sets posed significant challenges. This included interfacing with APIs, parsing large amounts of data, and structuring it in a usable format.
+- Data Corruption: Special characters in the data received from the APIs have led to data corruption issues.
