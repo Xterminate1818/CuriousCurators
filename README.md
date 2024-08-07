@@ -26,6 +26,8 @@ This app is designed to simplify the management of your Pokémon card collection
 - Clone the repository
 - Open Project in Android Studio
 - Ensure the environment is set to use API 35 or higher using the original PIXEL device.
+![2024-08-06](https://github.com/user-attachments/assets/236556c7-89a0-4e0c-aee3-aaabb8b5d6a6)
+
 
 ## Usage
 To use the Pokémon Cards Collection Tracker application:
